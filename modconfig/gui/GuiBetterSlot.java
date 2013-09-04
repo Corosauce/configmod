@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -73,7 +74,8 @@ public abstract class GuiBetterSlot
     public boolean field_77243_s;
     public int field_77242_t;
 
-    public String BACKGROUND_IMAGE = "/gui/background.png";
+    //public String BACKGROUND_IMAGE = "/gui/background.png";
+    public ResourceLocation resBG = new ResourceLocation("/gui/background.png");
 
     public GuiBetterSlot(Minecraft par1Minecraft, int par2, int par3, int par4, int par5, int par6)
     {
@@ -472,7 +474,8 @@ public abstract class GuiBetterSlot
     protected void overlayBackground(int par1, int par2, int par3, int par4)
     {
         Tessellator tessellator = Tessellator.instance;
-        this.mc.renderEngine.bindTexture(BACKGROUND_IMAGE);
+        //this.mc.renderEngine.bindTexture(BACKGROUND_IMAGE);
+        mc.func_110434_K().func_110577_a(resBG);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32.0F;
         tessellator.startDrawingQuads();
@@ -487,7 +490,8 @@ public abstract class GuiBetterSlot
 
     protected void drawContainerBackground(Tessellator tess)
     {
-        this.mc.renderEngine.bindTexture(BACKGROUND_IMAGE);
+        //this.mc.renderEngine.bindTexture(BACKGROUND_IMAGE);
+        mc.func_110434_K().func_110577_a(resBG);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         float height = 32.0F;
         tess.startDrawingQuads();

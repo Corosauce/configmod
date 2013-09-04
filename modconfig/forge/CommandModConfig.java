@@ -9,12 +9,18 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatMessageComponent;
 
 public class CommandModConfig extends CommandBase {
 
 	@Override
 	public String getCommandName() {
 		return "config";
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender icommandsender) {
+		return "";
 	}
 	
 	@Override
@@ -42,12 +48,12 @@ public class CommandModConfig extends CommandBase {
 						if (var2.length > 2) {
 							Object obj = ConfigMod.getField(var2[modid], var2[field]);
 							if (obj != null) {
-								var1.sendChatToPlayer(var2[field] + " = " + obj);
+								var1.sendChatToPlayer(ChatMessageComponent.func_111077_e(var2[field] + " = " + obj));
 							} else {
-								var1.sendChatToPlayer("failed to get " + var2[field]);
+								var1.sendChatToPlayer(ChatMessageComponent.func_111077_e("failed to get " + var2[field]));
 							}
 						} else {
-							var1.sendChatToPlayer("get requires 3 parameters");
+							var1.sendChatToPlayer(ChatMessageComponent.func_111077_e("get requires 3 parameters"));
 						}
 					} else if (var2[cmd].equalsIgnoreCase("set")) {
 						if (var2.length > 2) {
@@ -55,7 +61,7 @@ public class CommandModConfig extends CommandBase {
 							String val = "";
 							for (int i = vall; i < var2.length; i++) val += var2[i] + (i != var2.length-1 ? " " : "");
 							if (ConfigMod.updateField(var2[modid], var2[field], val)) {
-								var1.sendChatToPlayer("set " + var2[field] + " to " + val);
+								var1.sendChatToPlayer(ChatMessageComponent.func_111077_e("set " + var2[field] + " to " + val));
 								
 								List blah = new ArrayList();
 								
@@ -64,10 +70,10 @@ public class CommandModConfig extends CommandBase {
 								
 								MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(ConfigMod.getModConfigPacket(var2[modid]));
 							} else {
-								var1.sendChatToPlayer("failed to set " + var2[field]);
+								var1.sendChatToPlayer(ChatMessageComponent.func_111077_e("failed to set " + var2[field]));
 							}
 						} else {
-							var1.sendChatToPlayer("set requires 3+ parameters");
+							var1.sendChatToPlayer(ChatMessageComponent.func_111077_e("set requires 3+ parameters"));
 						}
 					} else if (var2[cmd].equalsIgnoreCase("update")) {
 						MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(ConfigMod.getModConfigPacket(var2[modid]));

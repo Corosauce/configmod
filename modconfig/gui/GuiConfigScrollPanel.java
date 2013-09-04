@@ -1,19 +1,17 @@
 package modconfig.gui;
 
+import modconfig.ConfigMod;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import modconfig.ConfigMod;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.gui.GuiControls;
-import net.minecraft.client.gui.GuiSlot;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.EnumChatFormatting;
 
 @SideOnly(Side.CLIENT)
 public class GuiConfigScrollPanel extends GuiBetterSlot
@@ -24,6 +22,7 @@ public class GuiConfigScrollPanel extends GuiBetterSlot
     private int _mouseX;
     private int _mouseY;
     private int selected = -1;
+    public ResourceLocation resGUI = new ResourceLocation("/gui/gui.png");
 
     public GuiConfigScrollPanel(GuiConfigEditor controls, Minecraft mc, int startX, int startY, int height, int slotSize)
     {
@@ -152,7 +151,8 @@ public class GuiConfigScrollPanel extends GuiBetterSlot
         boolean flag = _mouseX >= xPosition && _mouseY >= yPosition && _mouseX < xPosition + width && _mouseY < yPosition + height;
         int k = (flag ? 2 : 1);
 
-        mc.renderEngine.bindTexture("/gui/gui.png");
+        //mc.renderEngine.bindTexture("/gui/gui.png");
+        mc.func_110434_K().func_110577_a(resGUI);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //config.drawTexturedModalRect(xPosition, yPosition, 0, 46 + k * 20, width / 2, height);
         //config.drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2, 46 + k * 20, width / 2, height);

@@ -2,22 +2,14 @@ package modconfig.forge;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import modconfig.ConfigEntryInfo;
 import modconfig.ConfigMod;
 import modconfig.gui.GuiConfigEditor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;

@@ -10,13 +10,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import CoroAI.c_CoroAIUtil;
-
 import modconfig.forge.CommandModConfig;
 import modconfig.forge.MCPacketHandler;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
+import CoroAI.c_CoroAIUtil;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -209,7 +208,7 @@ public class ConfigMod {
     
     @SideOnly(Side.CLIENT)
 	public static String getClientSidePath() {
-		return FMLClientHandler.instance().getClient().getMinecraftDir().getPath();
+		return FMLClientHandler.instance().getClient().mcDataDir.getPath();
 	}
     
     public static void dbg(Object obj) {

@@ -1,10 +1,10 @@
 package modconfig;
 
+import modconfig.gui.GuiBetterTextField;
+import net.minecraft.client.Minecraft;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import modconfig.gui.GuiBetterTextField;
-import net.minecraft.client.Minecraft;
 
 public class ConfigEntryInfo {
 	public int index;

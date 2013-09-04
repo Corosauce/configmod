@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import CoroAI.c_CoroAIUtil;
-
 import net.minecraftforge.common.Configuration;
+import CoroAI.c_CoroAIUtil;
 
 public class ModConfigData {
 	public String configID;
