@@ -145,7 +145,7 @@ public class GuiConfigEditor extends GuiScreen
         //int var4 = this.mc.renderEngine.getTexture("/mods/ZombieCraft/textures/textures/menus/editorCP.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //this.mc.renderEngine.bindTexture("/mods/ModConfig/textures/gui/gui512.png");
-        mc.func_110434_K().func_110577_a(resGUI);
+        mc.getTextureManager().bindTexture(resGUI);
         //this.mc.renderEngine.bindTexture("/mods/HostileWorlds/textures/gui/demo_bg.png");
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;

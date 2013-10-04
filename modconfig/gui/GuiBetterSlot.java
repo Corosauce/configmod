@@ -475,7 +475,7 @@ public abstract class GuiBetterSlot
     {
         Tessellator tessellator = Tessellator.instance;
         //this.mc.renderEngine.bindTexture(BACKGROUND_IMAGE);
-        mc.func_110434_K().func_110577_a(resBG);
+        mc.getTextureManager().bindTexture(resBG);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32.0F;
         tessellator.startDrawingQuads();
@@ -491,7 +491,7 @@ public abstract class GuiBetterSlot
     protected void drawContainerBackground(Tessellator tess)
     {
         //this.mc.renderEngine.bindTexture(BACKGROUND_IMAGE);
-        mc.func_110434_K().func_110577_a(resBG);
+        mc.getTextureManager().bindTexture(resBG);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         float height = 32.0F;
         tess.startDrawingQuads();
