@@ -3,6 +3,7 @@ package modconfig;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -83,6 +84,7 @@ public class ConfigMod {
         	for (int i = 0; i < configLookup.get(modid).configData.size(); i++) {
         		dos.writeUTF((String)configLookup.get(modid).configData.get(i).name);
         		dos.writeUTF(String.valueOf(configLookup.get(modid).configData.get(i).value));
+        		dos.writeUTF(configLookup.get(modid).configData.get(i).comment);
         	}
             
         }
@@ -127,7 +129,8 @@ public class ConfigMod {
 	        Map.Entry pairs = (Map.Entry)it.next();
 	        String name = (String)pairs.getKey();
 	        Object val = pairs.getValue();
-	        ConfigEntryInfo info = new ConfigEntryInfo(configLookup.get(modid).configData.size(), name, val);
+	        String comment = getComment(modid, name);
+	        ConfigEntryInfo info = new ConfigEntryInfo(configLookup.get(modid).configData.size(), name, val, comment);
 	        configLookup.get(modid).configData.add(info);
 	    }
     }
@@ -157,6 +160,26 @@ public class ConfigMod {
     	try { return c_CoroAIUtil.getPrivateValue(configLookup.get(configID).configClass, instance, name);
     	} catch (Exception ex) { ex.printStackTrace(); }
     	return null;
+    }
+
+    /**
+     * Return the comment/description associated with a specific field
+     * @param configID ID of the config file
+     * @param name Name of the value to retrieve from
+     * @return The comment associated with the value, null if there is not one or it is not found
+     */
+    public static String getComment(String configID, String name) {    	
+        try {
+            Field field = configLookup.get(configID).configClass.getDeclaredField(name);
+            ConfigComment anno_comment = field.getAnnotation(ConfigComment.class);
+            return anno_comment == null ? null : anno_comment.value()[0];
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
     
     /* Update Config Field Entirely */

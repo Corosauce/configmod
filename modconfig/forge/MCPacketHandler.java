@@ -50,7 +50,8 @@ public class MCPacketHandler implements IPacketHandler
 		                for (int i = 0; i < entryCount; i++) {
 		                	String str1 = dis.readUTF();
 		                	String str2 = dis.readUTF();
-		                	ConfigMod.configLookup.get(modid).configData.add(new ConfigEntryInfo(pos++, str1, str2));
+		                	String str3 = dis.readUTF();
+		                	ConfigMod.configLookup.get(modid).configData.add(new ConfigEntryInfo(pos++, str1, str2, str3));
 		                }
 	                }
 	        	} else {
