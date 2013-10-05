@@ -11,15 +11,19 @@ public class ConfigEntryInfo {
 	public String name;
 	public Object value;
 	
+	/** Comment/description associated with value */
+	public String comment;
+	
 	public boolean markForUpdate = false;
 	
 	@SideOnly(Side.CLIENT)
 	public GuiBetterTextField editBox;
 	
-	public ConfigEntryInfo(int parIndex, String parName, Object parVal) {
+	public ConfigEntryInfo(int parIndex, String parName, Object parVal, String parComment) {
 		index = parIndex;
 		name = parName;
 		value = parVal;
+		comment = parComment;
 		
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) initButton();
 	}
