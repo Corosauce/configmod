@@ -84,7 +84,7 @@ public class ConfigMod {
         	for (int i = 0; i < configLookup.get(modid).configData.size(); i++) {
         		dos.writeUTF((String)configLookup.get(modid).configData.get(i).name);
         		dos.writeUTF(String.valueOf(configLookup.get(modid).configData.get(i).value));
-        		dos.writeUTF(configLookup.get(modid).configData.get(i).comment);
+        		//dos.writeUTF(configLookup.get(modid).configData.get(i).comment);
         	}
             
         }

@@ -157,7 +157,7 @@ public class GuiConfigScrollPanel extends GuiBetterSlot
         int k = (flag ? 2 : 1);
 
         //mc.renderEngine.bindTexture("/gui/gui.png");
-        mc.getTextureManager().bindTexture(resGUI);
+        //mc.getTextureManager().bindTexture(resGUI);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //config.drawTexturedModalRect(xPosition, yPosition, 0, 46 + k * 20, width / 2, height);
         //config.drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2, 46 + k * 20, width / 2, height);
