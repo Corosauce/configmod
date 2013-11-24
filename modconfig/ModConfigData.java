@@ -1,6 +1,7 @@
 package modconfig;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -138,29 +139,42 @@ public class ModConfigData {
     	for (int i = 0; i < fields.length; i++) {
     		Field field = fields[i];
     		String name = field.getName();
-    		addToConfig(name);
+
+    		addToConfig(field, name);
     	}
     	
     	preInitConfig.save();
     }
     
-    /*  */
-    private void addToConfig(String name) {
-    	
-    	//System.out.println("registering config field: " + name);
-    	
-    	Object obj = ConfigMod.getField(configID, name);
-    	if (obj instanceof String) {
-    		obj = preInitConfig.get(configInstance.getCategory(), name, (String)obj).getString();
-    	} else if (obj instanceof Integer) {
-    		obj = preInitConfig.get(configInstance.getCategory(), name, (Integer)obj).getInt((Integer)obj);
-    	} else if (obj instanceof Double) {
-    		obj = preInitConfig.get(configInstance.getCategory(), name, (Double)obj).getDouble((Double)obj);
-    	} else if (obj instanceof Boolean) {
-    		obj = preInitConfig.get(configInstance.getCategory(), name, (Boolean)obj).getBoolean((Boolean)obj);
-    	} else {
-    		//dbg("unhandled datatype, update initField");
-    	}
-    	setFieldBasedOnType(name, obj);
+    /**
+     * Perform the actual adding of values to the config file
+     * @param name Name of the variable
+     * @param field Field in the file the variable is
+     */
+    private void addToConfig(Field field, String name) {
+
+        // Comment from the annotation on the value of the actual variable that 'name' is retrieved from
+        String comment = null;
+
+        ConfigComment anno_comment = field.getAnnotation(ConfigComment.class);
+        if (anno_comment != null) {
+            comment = anno_comment.value()[0];
+        }
+
+        //System.out.println("registering config field: " + name);
+
+        Object obj = ConfigMod.getField(configID, name);
+        if (obj instanceof String) {
+            obj = preInitConfig.get(configInstance.getCategory(), name, (String)obj, comment).getString();
+        } else if (obj instanceof Integer) {
+            obj = preInitConfig.get(configInstance.getCategory(), name, (Integer)obj, comment).getInt((Integer)obj);
+        } else if (obj instanceof Double) {
+            obj = preInitConfig.get(configInstance.getCategory(), name, (Double)obj, comment).getDouble((Double)obj);
+        } else if (obj instanceof Boolean) {
+            obj = preInitConfig.get(configInstance.getCategory(), name, (Boolean)obj, comment).getBoolean((Boolean)obj);
+        } else {
+            //dbg("unhandled datatype, update initField");
+        }
+        setFieldBasedOnType(name, obj);
     }
 }
