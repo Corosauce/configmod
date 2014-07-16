@@ -229,6 +229,9 @@ public abstract class GuiBetterSlot
         this.mouseY = par2;
         this.drawBackground();
         int k = this.getSize();
+        
+        //System.out.println("SIZE: " + k);
+        
         int l = this.getScrollBarX();
         int i1 = l + 6;
         int j1;

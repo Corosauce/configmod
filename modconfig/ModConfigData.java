@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.minecraftforge.common.Configuration;
-import CoroAI.c_CoroAIUtil;
+import net.minecraftforge.common.config.Configuration;
+import CoroUtil.OldUtil;
 
 public class ModConfigData {
 	public String configID;
@@ -64,16 +64,16 @@ public class ModConfigData {
     public boolean setFieldBasedOnType(String name, Object obj) {
     	try {
     		if (valsString.containsKey(name)) {
-    			c_CoroAIUtil.setPrivateValue(configClass, configInstance, name, (String)obj);
+    			OldUtil.setPrivateValue(configClass, configInstance, name, (String)obj);
     			inputField(name, (String)obj);
     		} else if (valsInteger.containsKey(name)) {
-    			c_CoroAIUtil.setPrivateValue(configClass, configInstance, name, Integer.valueOf(obj.toString()));
+    			OldUtil.setPrivateValue(configClass, configInstance, name, Integer.valueOf(obj.toString()));
     			inputField(name, Integer.valueOf(obj.toString()));
     		} else if (valsDouble.containsKey(name)) {
-    			c_CoroAIUtil.setPrivateValue(configClass, configInstance, name, Double.valueOf(obj.toString()));
+    			OldUtil.setPrivateValue(configClass, configInstance, name, Double.valueOf(obj.toString()));
     			inputField(name, Double.valueOf(obj.toString()));
     		} else if (valsBoolean.containsKey(name)) {
-    			c_CoroAIUtil.setPrivateValue(configClass, configInstance, name, Boolean.valueOf(obj.toString()));
+    			OldUtil.setPrivateValue(configClass, configInstance, name, Boolean.valueOf(obj.toString()));
     			inputField(name, Boolean.valueOf(obj.toString()));
     		} else {
     			return false;

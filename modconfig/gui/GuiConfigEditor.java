@@ -60,6 +60,7 @@ public class GuiConfigEditor extends GuiScreen
     }
     
     public String getCategory() {
+    	if (ConfigMod.liveEditConfigs.size() <= 0) return "<NULL>";
     	return ConfigMod.liveEditConfigs.get(curIndex).configID;
     	//return "weather";
     }
@@ -70,12 +71,18 @@ public class GuiConfigEditor extends GuiScreen
     
     public void updateScreen()
     {
-    	updateStates();
-        
-    	for (int i = 0; i < getData().configData.size(); i++) {
-    		if (getData().configData.get(i).editBox != null && getData().configData.get(i).editBox.isFocused()) {
-    			getData().configData.get(i).editBox.updateCursorCounter();
-    		}
+    	try {
+	    	updateStates();
+	        
+	    	if (ConfigMod.liveEditConfigs.size() > 0) {
+		    	for (int i = 0; i < getData().configData.size(); i++) {
+		    		if (getData().configData.get(i).editBox != null && getData().configData.get(i).editBox.isFocused()) {
+		    			getData().configData.get(i).editBox.updateCursorCounter();
+		    		}
+		    	}
+	    	}
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
     	}
         super.updateScreen();
         //++this.updateCounter;
@@ -94,8 +101,8 @@ public class GuiConfigEditor extends GuiScreen
     	
     	drawGuiContainerClippingScrollLayer(0, 0, 0);
     	
-    	this.drawString(this.fontRenderer, "Config for: " + getConfigData(getCategory()).configInstance.getCategory(), startX + 10, startY + 10, 16777215);
-    	this.drawString(this.fontRenderer, (curIndex+1) + "/" + ConfigMod.liveEditConfigs.size(), startX + xSize - 60, startY + 10, 16777215);
+    	this.drawString(this.fontRendererObj, "Config for: " + getCategory(), startX + 10, startY + 10, 16777215);
+    	this.drawString(this.fontRendererObj, (curIndex+1) + "/" + ConfigMod.liveEditConfigs.size(), startX + xSize - 60, startY + 10, 16777215);
     	
     	//this.textboxWorldName.drawTextBox();
         super.drawScreen(var1, var2, var3);

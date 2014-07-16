@@ -1,11 +1,11 @@
 package modconfig.gui;
 
-import java.util.Iterator;
 import java.util.List;
 
+import modconfig.ConfigEntryInfo;
 import modconfig.ConfigMod;
+import modconfig.ModConfigData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.settings.KeyBinding;
@@ -40,7 +40,8 @@ public class GuiConfigScrollPanel extends GuiBetterSlot
     @Override
     protected int getSize()
     {
-        return config.getData().configData.size();
+    	ModConfigData data = config.getData();
+        return data.configData.size();
     }
 
     @Override
@@ -71,9 +72,14 @@ public class GuiConfigScrollPanel extends GuiBetterSlot
     	boolean anyHasFocus = false;
     	for (int i = 0; i < config.getData().configData.size(); i++) {
     		
-    		config.getData().configData.get(i).editBox.mouseClicked(par1, par2, par3);
-    		if (config.getData().configData.get(i).editBox.isFocused()) {
-    			anyHasFocus = true;
+    		try {
+	    		config.getData().configData.get(i).editBox.mouseClicked(par1, par2, par3);
+	    		if (config.getData().configData.get(i).editBox.isFocused()) {
+	    			anyHasFocus = true;
+	    		}
+    		} catch (Exception ex) {
+    			//mouseClicked NPE'd on me once, NEVER AGAIN!
+    			ex.printStackTrace();
     		}
     		/*if (check && !config.configData.get(i).editBox.isFocused()) {
     			String str1 = config.configData.get(i).editBox.text;
@@ -143,7 +149,8 @@ public class GuiConfigScrollPanel extends GuiBetterSlot
         try {
         	super.drawScreen(mX, mY, f);
         } catch (Exception ex) {
-        	ConfigMod.dbg("exception drawing screen elements");
+        	ex.printStackTrace();
+        	//ConfigMod.dbg("exception drawing screen elements");
         }
     }
 
@@ -183,6 +190,7 @@ public class GuiConfigScrollPanel extends GuiBetterSlot
         String str = (conflict ? EnumChatFormatting.RED : "") + value;//options.getOptionDisplayString(index);
         str = (index == selected ? EnumChatFormatting.WHITE + "> " + EnumChatFormatting.YELLOW + "??? " + EnumChatFormatting.WHITE + "<" : str);
         //config.drawString(mc.fontRenderer, str, xPosition + 20/* + (width / 2)*/, yPosition + (height - 8) / 2, 0xFFFFFFFF);
+        List<ConfigEntryInfo> configDataTest = config.getData().configData;
         config.getData().configData.get(index).editBox.xPos = xPosition + 20;
         config.getData().configData.get(index).editBox.yPos = yPosition/* + (height - 8) / 2*/;
         //config.configData.get(index).editBox.text = config.configData.get(index).value.toString();

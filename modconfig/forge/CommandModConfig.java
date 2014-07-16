@@ -8,8 +8,10 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
+import CoroUtil.util.CoroUtil;
 
 public class CommandModConfig extends CommandBase {
 
@@ -43,17 +45,18 @@ public class CommandModConfig extends CommandBase {
 				int field = 2;
 				int vall = 3;
 				EntityPlayer player = getCommandSenderAsPlayer(var1);
+				EntityPlayerMP playerMP = (EntityPlayerMP) player;
 				if (var2.length > 0) {
 					if (var2[cmd].equalsIgnoreCase("get")) {
 						if (var2.length > 2) {
 							Object obj = ConfigMod.getField(var2[modid], var2[field]);
 							if (obj != null) {
-								var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey(var2[field] + " = " + obj));
+								var1.addChatMessage(new ChatComponentText(var2[field] + " = " + obj));
 							} else {
-								var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("failed to get " + var2[field]));
+								CoroUtil.sendPlayerMsg(playerMP, "failed to get " + var2[field]);
 							}
 						} else {
-							var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("get requires 3 parameters"));
+							CoroUtil.sendPlayerMsg(playerMP, "get requires 3 parameters");
 						}
 					} else if (var2[cmd].equalsIgnoreCase("set")) {
 						if (var2.length > 2) {
@@ -61,28 +64,33 @@ public class CommandModConfig extends CommandBase {
 							String val = "";
 							for (int i = vall; i < var2.length; i++) val += var2[i] + (i != var2.length-1 ? " " : "");
 							if (ConfigMod.updateField(var2[modid], var2[field], val)) {
-								var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("set " + var2[field] + " to " + val));
+								CoroUtil.sendPlayerMsg(playerMP, "set " + var2[field] + " to " + val);
 								
 								List blah = new ArrayList();
 								
 								blah.add((String)var2[field]);
 								blah.add((String)val);
 								
-								MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(ConfigMod.getModConfigPacket(var2[modid]));
+								ConfigMod.eventChannel.sendTo(PacketHelper.getModConfigPacket(var2[modid]), (EntityPlayerMP)player);
+								//MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(PacketHelper.getModConfigPacket(var2[modid]));
 							} else {
-								var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("failed to set " + var2[field]));
+								CoroUtil.sendPlayerMsg(playerMP, "failed to set " + var2[field]);
 							}
 						} else {
-							var1.sendChatToPlayer(ChatMessageComponent.createFromTranslationKey("set requires 3+ parameters"));
+							CoroUtil.sendPlayerMsg(playerMP, "set requires 3+ parameters");
 						}
 					} else if (var2[cmd].equalsIgnoreCase("update")) {
-						MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(ConfigMod.getModConfigPacket(var2[modid]));
+						ConfigMod.eventChannel.sendTo(PacketHelper.getModConfigPacket(var2[modid]), (EntityPlayerMP)player);
+						//MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(PacketHelper.getModConfigPacket(var2[modid]));
 					} else if (var2[cmd].equalsIgnoreCase("menu") || var2[cmd].equalsIgnoreCase("gui")) {
-						((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(ConfigMod.getModConfigPacketMenu());
+						NBTTagCompound nbt = new NBTTagCompound();
+						nbt.setString("command", "openGUI");
+						ConfigMod.eventChannel.sendTo(PacketHelper.getModConfigPacketMenu(), (EntityPlayerMP)player);
 					}
 					
 				} else {
-					((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(ConfigMod.getModConfigPacketMenu());
+					//((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(PacketHelper.getModConfigPacketMenu());
+					ConfigMod.eventChannel.sendTo(PacketHelper.getModConfigPacketMenu(), (EntityPlayerMP)player);
 				}
 			}
 		} catch (Exception ex) {

@@ -1,7 +1,5 @@
 package modconfig;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -12,21 +10,22 @@ import java.util.List;
 import java.util.Map;
 
 import modconfig.forge.CommandModConfig;
-import modconfig.forge.MCPacketHandler;
+import modconfig.forge.EventHandlerPacket;
 import net.minecraft.command.ServerCommandManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
-import CoroAI.c_CoroAIUtil;
+import CoroUtil.OldUtil;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.FMLEventChannel;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@NetworkMod(channels = { "ModConfig" }, clientSideRequired = true, serverSideRequired = true, packetHandler = MCPacketHandler.class)
+//@NetworkMod(channels = { "ModConfig" }, clientSideRequired = true, serverSideRequired = true, packetHandler = MCPacketHandler.class)
 @Mod(modid = "ConfigMod", name="Extended Mod Config", version="v1.0", useMetadata=false)
 public class ConfigMod {
 
@@ -40,66 +39,31 @@ public class ConfigMod {
 	public static List<ModConfigData> liveEditConfigs = new ArrayList<ModConfigData>();
 	public static HashMap<String, ModConfigData> configLookup = new HashMap<String, ModConfigData>();
 	
+	public static String eventChannelName = "modconfig";
+	public static final FMLEventChannel eventChannel = NetworkRegistry.INSTANCE.newEventDrivenChannel(eventChannelName);
 	
     public ConfigMod() {
-    	instance = this;
+    	//instance = this;
     }
     
-    @Mod.ServerStarted
+    @Mod.EventHandler
     public void serverStart(FMLServerStartedEvent event) {
     	((ServerCommandManager)FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(new CommandModConfig());
     }
     
-    public static Packet250CustomPayload getModConfigPacketMenu() {
-    	ByteArrayOutputStream bos = new ByteArrayOutputStream(Integer.SIZE);
-        DataOutputStream dos = new DataOutputStream(bos);
-
-        try
-        {
-        	dos.writeInt(1);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        Packet250CustomPayload pkt = new Packet250CustomPayload();
-        pkt.channel = "ModConfig";
-        pkt.data = bos.toByteArray();
-        pkt.length = bos.size();
-        
-        return pkt;
+    @Mod.EventHandler
+    private static void preInit(FMLPreInitializationEvent event) {
+    	eventChannel.register(new EventHandlerPacket());
+    	//new ConfigMod();
+    	//instance.saveFilePath = event.getSuggestedConfigurationFile();
+    	//instance.initData();
+    	//instance.writeConfigFiles(false);
     }
     
-    public static Packet250CustomPayload getModConfigPacket(String modid/*, int count, List entries*/) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(Integer.SIZE + Character.SIZE * 64 * configLookup.get(modid).configData.size());
-        DataOutputStream dos = new DataOutputStream(bos);
-
-        try
-        {
-        	dos.writeInt(0);
-        	dos.writeUTF(modid);
-        	populateData(modid);
-        	dos.writeInt(configLookup.get(modid).configData.size());
-        	for (int i = 0; i < configLookup.get(modid).configData.size(); i++) {
-        		dos.writeUTF((String)configLookup.get(modid).configData.get(i).name);
-        		dos.writeUTF(String.valueOf(configLookup.get(modid).configData.get(i).value));
-        		//dos.writeUTF(configLookup.get(modid).configData.get(i).comment);
-        	}
-            
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        Packet250CustomPayload pkt = new Packet250CustomPayload();
-        pkt.channel = "ModConfig";
-        pkt.data = bos.toByteArray();
-        pkt.length = bos.size();
-        
-        return pkt;
-	}
+    @Mod.EventHandler
+    private static void init(FMLInitializationEvent event) {
+    	
+    }
     
     public static void populateData(String modid) {
     	
@@ -135,6 +99,35 @@ public class ConfigMod {
 	    }
     }
     
+    public void initData() {
+    	
+    }
+    
+    public void writeConfigFiles(Boolean resetData) {
+    	
+    }
+    
+    public static String getSaveFolderPath() {
+    	if (MinecraftServer.getServer() == null || MinecraftServer.getServer().isSinglePlayer()) {
+    		return getClientSidePath() + File.separator;
+    	} else {
+    		return new File(".").getAbsolutePath() + File.separator;
+    	}
+    	
+    }
+    
+    @SideOnly(Side.CLIENT)
+	public static String getClientSidePath() {
+		return FMLClientHandler.instance().getClient().mcDataDir.getPath();
+	}
+    
+    public static void dbg(Object obj) {
+		if (true) {
+			System.out.println(obj);
+			//MinecraftServer.getServer().getLogAgent().logInfo(String.valueOf(obj));
+		}
+	}
+    
     /* Main Usage Methods Start */
     
     /* Main Inits */
@@ -143,7 +136,7 @@ public class ConfigMod {
     }
     
     public static void addConfigFile(FMLPreInitializationEvent event, String modID, IConfigCategory configCat, boolean liveEdit) {
-    	if (instance == null) init(event);
+    	//if (instance == null) init(event);
     	
     	ModConfigData configData = new ModConfigData(new File(getSaveFolderPath() + "config" + File.separator + configCat.getConfigFileName() + ".cfg"), modID, configCat.getClass(), configCat);
     	
@@ -157,7 +150,7 @@ public class ConfigMod {
     
     /* Get Inner Field value */
     public static Object getField(String configID, String name) {
-    	try { return c_CoroAIUtil.getPrivateValue(configLookup.get(configID).configClass, instance, name);
+    	try { return OldUtil.getPrivateValue(configLookup.get(configID).configClass, instance, name);
     	} catch (Exception ex) { ex.printStackTrace(); }
     	return null;
     }
@@ -204,40 +197,4 @@ public class ConfigMod {
     }
     
     /* Main Usage Methods End */
-    
-    private static void init(FMLPreInitializationEvent event) {
-    	new ConfigMod();
-    	//instance.saveFilePath = event.getSuggestedConfigurationFile();
-    	//instance.initData();
-    	//instance.writeConfigFiles(false);
-    }
-    
-    public void initData() {
-    	
-    }
-    
-    public void writeConfigFiles(Boolean resetData) {
-    	
-    }
-    
-    public static String getSaveFolderPath() {
-    	if (MinecraftServer.getServer() == null || MinecraftServer.getServer().isSinglePlayer()) {
-    		return getClientSidePath() + File.separator;
-    	} else {
-    		return new File(".").getAbsolutePath() + File.separator;
-    	}
-    	
-    }
-    
-    @SideOnly(Side.CLIENT)
-	public static String getClientSidePath() {
-		return FMLClientHandler.instance().getClient().mcDataDir.getPath();
-	}
-    
-    public static void dbg(Object obj) {
-		if (true) {
-			System.out.println(obj);
-			//MinecraftServer.getServer().getLogAgent().logInfo(String.valueOf(obj));
-		}
-	}
 }
